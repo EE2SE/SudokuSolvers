@@ -8,6 +8,7 @@ using namespace std;
 
 int main(int argc,  char** argv) 
 {
+    cout << "HELLO" << endl;
     string filename = "sudoku1.txt";
     Sudoku mysudoku(filename);
 

@@ -11,13 +11,15 @@ class Sudoku
         Sudoku(string filename);
         Sudoku();
         bool solve();
-        void readInValues();
         void printSolution();
 
     private:
+        string sudoku_filename;
         bool solved;
         int values[9][9];
         bool fixed_values[9][9];
+
+        void readInValues();
 };
 
 #endif

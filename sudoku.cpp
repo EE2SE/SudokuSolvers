@@ -1,5 +1,6 @@
 #include <sudoku.hpp>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -10,20 +11,18 @@ Sudoku::Sudoku()
 
 Sudoku::Sudoku(string filename)
 {
-
+    sudoku_filename = filename;
+    readInValues();
 }
 
-class Sudoku
+void Sudoku::readInValues()
 {
-    public:
-        Sudoku(string filename);
-        Sudoku();
-        bool solve();
-        void readInValues();
-        void printSolution();
+    ifstream myfile;
+    string mystring;
+    myfile.open(sudoku_filename);
+    if ( myfile.is_open() ) { // always check whether the file is open
+        myfile >> mystring; // pipe file's content into stream
+        cout << mystring; // pipe stream's content to standard output
+    }
 
-    private:
-        bool solved;
-        int values[9][9];
-        bool fixed_values[9][9];
-};
+}
