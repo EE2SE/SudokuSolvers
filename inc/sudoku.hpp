@@ -3,6 +3,11 @@
 
 #include <string>
 
+#define NUM_ROWS 9
+#define NUM_COLS 9
+#define MINOR_ROWS 3
+#define MINOR_COLS 3
+
 using namespace std;
 
 class Sudoku
