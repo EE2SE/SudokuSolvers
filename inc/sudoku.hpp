@@ -15,16 +15,24 @@ class Sudoku
     public:
         Sudoku(string filename);
         Sudoku();
-        bool solve();
+        void solveBruteForce();
+        void solveBacktrack();
+        void solveHuman();
         void printSolution();
+        
 
     private:
         string sudoku_filename;
         bool solved;
-        int values[9][9];
-        bool fixed_values[9][9];
-
+        int values[NUM_ROWS][NUM_COLS];
+        int fixed_values[NUM_ROWS][NUM_COLS];
+        int solution[NUM_ROWS][NUM_COLS];
+        int filledSpaces;
         void readInValues();
+        bool checkSolution();
+        bool checkValuePossible();
+        
+        
 };
 
 #endif
