@@ -3,8 +3,12 @@
 #include <fstream>
 #include <stdlib.h>     /* atoi */
 #include <map>
+#include <thread>
+#include <chrono>
 
 using namespace std;
+using namespace std::this_thread; // sleep_for, sleep_until
+using namespace std::chrono; // nanoseconds, system_clock, seconds
 
 Sudoku::Sudoku()
 {
@@ -91,10 +95,11 @@ void Sudoku::solveBruteForce()
         we have a fixed 5, we won't brute force insert 5 into any cell in that row
     */
 
-    int emptySpaces = NUM_COLS*NUM_ROWS - filledSpaces;
+    int totalCombinations = 1; 
 
     // initialise a 3D vector storing all non-taken values
      vector< vector< vector<int> > > possibleValues;
+     vector<vector<int> > updatableCells;
     for (int i = 0; i < NUM_ROWS; i++)
     {
         vector< vector<int> > row;
@@ -109,13 +114,66 @@ void Sudoku::solveBruteForce()
                     {
                         cell_options.push_back(checkval);
                     }
-                    
                 }
-                
+
+                vector<int> rowColPair;
+                rowColPair.push_back(i);
+                rowColPair.push_back(k);
+                updatableCells.push_back(rowColPair);
+                totalCombinations *= cell_options.size();
             }
+            cout << cell_options.size() << " ";
+            // push back a counter
+            cell_options.push_back(0);
             row.push_back(cell_options);
         }
+        cout << endl;
         possibleValues.push_back(row);
+    }
+
+    // now iterate over all possible number combinations 
+    int updatingCellIdx = 0;
+    int counter = 1;
+    while(!checkSolution())
+    {
+        // insert numbers
+        for (int i = 0; i < NUM_ROWS; i++)
+        {
+            for (int k = 0; k < NUM_COLS; k++)
+            {
+                if(fixed_values[i][k] == 0)
+                {
+                    int idx = possibleValues[i][k].back();
+                    solution[i][k] = possibleValues[i][k].at(idx);
+
+                    // check if this is the cell we are updating next and if so increment the value to be tried next
+                    // and of there are no values to be tried, set it back to the first one and flag that we are
+                    // incremeneting the next cell instead
+                    if ((i == updatableCells[updatingCellIdx].at(0)) && (k == updatableCells[updatingCellIdx].at(1)))
+                    {
+                        cout << "Attempt: " << counter << "/" << totalCombinations << endl;
+                        counter++;
+                        if (idx >= possibleValues[i][k].size()-2)
+                        {
+                            possibleValues[i][k].pop_back();
+                            possibleValues[i][k].push_back(0);
+                            updatingCellIdx++;
+                            if(updatingCellIdx == updatableCells.size())
+                            {
+                                cout << "NO SOLUTION FOUND!" << endl;
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            possibleValues[i][k].pop_back();
+                            possibleValues[i][k].push_back(++idx);
+                        }
+                    }
+                }
+            }
+        }
+        
     }
 
 }
