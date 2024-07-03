@@ -97,26 +97,140 @@ void Sudoku::solveBruteForce()
      vector< vector< vector<int> > > possibleValues;
     for (int i = 0; i < NUM_ROWS; i++)
     {
-        possibleValues.push_back(vector<vector<int>>());
+        vector< vector<int> > row;
         for(int k = 0; k< NUM_COLS; k++)
         {
-            possibleValues[i].push_back(vector<int>());
+            vector<int> cell_options;
             if(fixed_values[i][k] == 0)
             {
-                for(int checkval = 0; checkval < 8; checkval)
+                for(int checkval = 0; checkval < 8; checkval++)
                 {
-                    possibleValues[i][k]
+                    if(checkValuePossible(checkval, i, k))
+                    {
+                        cell_options.push_back(checkval);
+                    }
+                    
                 }
                 
             }
+            row.push_back(cell_options);
         }
+        possibleValues.push_back(row);
     }
 
 }
 
-bool Sudoku::checkValuePossible()
+bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
 {
+    for(int i = 0; i < NUM_COLS; i++)
+    {
+        if(values[row][i] == valToCheck)
+        {
+            return false;
+        }
+    }
+
+    for(int i = 0; i < NUM_ROWS; i++)
+    {
+        if(values[i][col] == valToCheck)
+        {
+            return false;
+        }
+    }
+
+    // since we checked row and column at this stage
+    // we only need to check 4 values in the box
+    // row = 4, we just need to check row 3 and row 5
+    // so somehow we need row -1 and row +1
+    // 4%3 = 1
+    // row = 3, check row+1 row+2 => 3%3 = 0
+    // row = 4, check row-1 row+1 => 4%3 = 1
+    // row = 5, check row-2 row -1 => 5%3 = 2
     
+    switch(row%3)
+    {
+        case 0:
+            switch(col%3)
+            {
+                case 0:
+                    if((values[row+1][col+1] == valToCheck) || (values[row+2][col+1] == valToCheck) || (values[row+1][col+2] == valToCheck) || (values[row+2][col+2] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+
+                case 1:
+                    if((values[row+1][col+1] == valToCheck) || (values[row+2][col+1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row+2][col-1] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+
+                case 2:
+                    if((values[row+1][col-1] == valToCheck) || (values[row+2][col-1] == valToCheck) || (values[row+1][col-2] == valToCheck) || (values[row+2][col-2] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+            }
+        break;
+
+        case 1:
+            switch(col%3)
+            {
+                case 0:
+                    if((values[row-1][col+1] == valToCheck) || (values[row-1][col+1] == valToCheck) || (values[row+1][col+2] == valToCheck) || (values[row-1][col+2] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+
+                case 1:
+                    if((values[row-1][col+1] == valToCheck) || (values[row-1][col+1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row-1][col-1] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+
+                case 2:
+                    if((values[row-1][col-1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row+1][col-2] == valToCheck) || (values[row-1][col-2] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+            }
+        break;
+
+        case 2:
+            switch(col%3)
+            {
+                case 0:
+                    if((values[row-1][col+1] == valToCheck) || (values[row-2][col+1] == valToCheck) || (values[row-1][col+2] == valToCheck) || (values[row-2][col+2] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+
+                case 1:
+                    if((values[row-1][col+1] == valToCheck) || (values[row-2][col+1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row-2][col-1] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+
+                case 2:
+                    if((values[row-1][col-1] == valToCheck) || (values[row-2][col-1] == valToCheck) || (values[row-1][col-2] == valToCheck) || (values[row-2][col-2] == valToCheck))
+                    {
+                        return false;
+                    }
+                break;
+            }
+        break;
+    }
+    
+
+    return true;
+
 }
 
 bool Sudoku::checkSolution()

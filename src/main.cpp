@@ -14,6 +14,7 @@ int main(int argc,  char** argv)
     cout << "Sudoku Solvers Comparison V" << MAJOR_V << "." << MINOR_V << endl << endl;
     string filename = "sudoku1.txt";
     Sudoku mysudoku(filename);
+    mysudoku.solveBruteForce();
     // cout << endl << endl << mysudoku.checkSolution() << endl << endl;
     return 0;
 }

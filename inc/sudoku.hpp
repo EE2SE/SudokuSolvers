@@ -30,7 +30,7 @@ class Sudoku
         int filledSpaces;
         void readInValues();
         bool checkSolution();
-        bool checkValuePossible();
+        bool checkValuePossible(int valToCheck, int row, int col);
         
         
 };
