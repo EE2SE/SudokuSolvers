@@ -3,13 +3,16 @@
         {
             "name": "Mac",
             "includePath": [
-                "/Users/jakubszypicyn/Documents/SudokuSolvers/inc"
+                "${workspaceFolder}/**"
             ],
-            "macFrameworkPath": [
-                "/System/Library/Frameworks",
-                "/Library/Frameworks"
+            "defines": [            
             ],
-            "intelliSenseMode": "macos-clang-x64"
+            "forcedInclude": [],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/bin/clang++",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "gcc-x64"
         }
     ],
     "version": 4

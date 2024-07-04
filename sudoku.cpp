@@ -1,4 +1,4 @@
-#include "../inc/sudoku.hpp"
+#include "sudoku.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>     /* atoi */
@@ -243,6 +243,7 @@ bool Sudoku::solveBruteForce()
         
     }
 
+    printSolution();
     return true;
 
 }
