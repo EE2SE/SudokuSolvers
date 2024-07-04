@@ -89,23 +89,6 @@ bool Sudoku::solveBetterBruteForce()
         This version of the brute force will only update the required values, which should
         result in significat speed-up
     */
-
-   
-}
-
-bool Sudoku::solveBruteForce()
-{
-    /*
-        Brute Force tries every single number combination blindly.
-        E.g. it will start by filling all values with 1111, then 1112 etc.
-        This will probably not even work because to try all 9 numbers in
-        at worst 81 different squares will require something like 1e77 total tries.
-
-        So we can do a little better but still brute force. We can determine every
-        single possible value for each cell and then only try those. So if in row (a)
-        we have a fixed 5, we won't brute force insert 5 into any cell in that row
-    */
-
     int totalCombinations = 1; 
 
     // initialise a 3D vector storing all non-taken values
@@ -142,9 +125,64 @@ bool Sudoku::solveBruteForce()
         possibleValues.push_back(row);
     }
 
+    return true;
+
+
+}
+
+bool Sudoku::solveBruteForce()
+{
+    /*
+        Brute Force tries every single number combination blindly.
+        E.g. it will start by filling all values with 1111, then 1112 etc.
+        This will probably not even work because to try all 9 numbers in
+        at worst 81 different squares will require something like 1e77 total tries.
+
+        So we can do a little better but still brute force. We can determine every
+        single possible value for each cell and then only try those. So if in row (a)
+        we have a fixed 5, we won't brute force insert 5 into any cell in that row
+    */
+
+    int totalCombinations = 1; 
+
+    // initialise a 3D vector storing all non-taken values
+     vector< vector< vector<int> > > possibleValues;
+     vector<vector<int> > updatableCells;
+    for (int i = 0; i < NUM_ROWS; i++)
+    {
+        vector< vector<int> > row;
+        for(int k = 0; k< NUM_COLS; k++)
+        {
+            vector<int> cell_options;
+            if(fixed_values[i][k] == 0)
+            {
+                for(int checkval = 1; checkval < 10; checkval++)
+                {
+                    if(checkValuePossible(checkval, i, k))
+                    {
+                        cell_options.push_back(checkval);
+                    }
+                }
+
+                vector<int> rowColPair;
+                rowColPair.push_back(i);
+                rowColPair.push_back(k);
+                updatableCells.push_back(rowColPair);
+                totalCombinations *= cell_options.size(); // this is overflowing as the real number is of the order of 1e19
+            }
+            cout << cell_options.size() << " ";
+            // push back a counter
+            cell_options.push_back(0);
+            row.push_back(cell_options);
+        }
+        cout << endl;
+        possibleValues.push_back(row);
+    }
+
     // now iterate over all possible number combinations 
     int updatingCellIdx = 0;
     int counter = 1;
+    cout << totalCombinations << endl;
     while(!checkSolution())
     {
         // insert numbers
@@ -154,41 +192,53 @@ bool Sudoku::solveBruteForce()
             {
                 if(fixed_values[i][k] == 0)
                 {
+                    // idx - position in the vector of availbale options for the given cell to try out
                     int idx = possibleValues[i][k].back();
+                    // insert the possible value from vector[idx] for the given cell
                     solution[i][k] = possibleValues[i][k].at(idx);
-
-                    // check if this is the cell we are updating next and if so increment the value to be tried next
-                    // and of there are no values to be tried, set it back to the first one and flag that we are
-                    // incremeneting the next cell instead
-                    if ((i == updatableCells[updatingCellIdx].at(0)) && (k == updatableCells[updatingCellIdx].at(1)))
-                    {
-                        if(counter%100000 == 0)
-                        {
-                            cout << "Attempt: " << counter << "/" << totalCombinations << ". Completed: " << 100.0f*(float)counter/(float)totalCombinations <<endl;
-                        }
-
-                        counter++;
-
-
-                        while(idx>=possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].size()-2)
-                        {
-
-                            possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].pop_back();
-                            possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].push_back(0);
-                            updatingCellIdx++;
-                            if(updatingCellIdx == updatableCells.size())
-                            {
-                                cout << "NO SOLUTION FOUND!" << endl;
-                                return false;
-                            }
-                            idx = possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].back();
-                        }
-                        updatingCellIdx = 0;
-                        possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].pop_back();
-                        possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].push_back(++idx);
-                    }
                 }
             }
+        }
+
+        if(counter%1000000 == 0)
+        {
+            cout << "Attempt: " << counter << "/" << totalCombinations << ". Completed: " << 100.0f*(float)counter/(float)totalCombinations <<endl;
+        }
+        counter++;
+        //once we updated 81 cells update vectors and indicies.
+        // fetch currently used cell
+        // actually at this stage updatingCellIdx is always 0.
+        int updating_row = updatableCells[updatingCellIdx].at(0);
+        int updating_col = updatableCells[updatingCellIdx].at(1);
+        int last_idx = possibleValues[updating_row][updating_col].back();
+        // check if there are more options in this cell
+        if(last_idx < possibleValues[updating_row][updating_col].size()-2)
+        {
+            // if there, set it to try the next option and don't change the updating cell
+            possibleValues[updating_row][updating_col].pop_back();
+            possibleValues[updating_row][updating_col].push_back(++last_idx);
+        }
+        else // otherwise we need to go to the next incrementable cell and increment that one while resetting all the previous ones
+        {
+            while(last_idx >= possibleValues[updating_row][updating_col].size()-2)
+            {
+                possibleValues[updating_row][updating_col].pop_back();
+                possibleValues[updating_row][updating_col].push_back(0);
+                updatingCellIdx++;
+                if(updatingCellIdx == updatableCells.size())
+                {
+                    cout << "NO SOLUTION FOUND!" << endl;
+                    return false;
+                }
+
+                updating_row = updatableCells[updatingCellIdx].at(0);
+                updating_col = updatableCells[updatingCellIdx].at(1);
+                last_idx = possibleValues[updating_row][updating_col].back();
+            }
+
+            possibleValues[updating_row][updating_col].pop_back();
+            possibleValues[updating_row][updating_col].push_back(++last_idx);
+            updatingCellIdx = 0;
         }
         
     }
@@ -203,6 +253,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
     {
         if(values[row][i] == valToCheck)
         {
+            // cout << "In column-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
             return false;
         }
     }
@@ -211,6 +262,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
     {
         if(values[i][col] == valToCheck)
         {
+            // cout << "In row-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
             return false;
         }
     }
@@ -232,6 +284,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 case 0:
                     if((values[row+1][col+1] == valToCheck) || (values[row+2][col+1] == valToCheck) || (values[row+1][col+2] == valToCheck) || (values[row+2][col+2] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
@@ -239,6 +292,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 case 1:
                     if((values[row+1][col+1] == valToCheck) || (values[row+2][col+1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row+2][col-1] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
@@ -246,6 +300,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 case 2:
                     if((values[row+1][col-1] == valToCheck) || (values[row+2][col-1] == valToCheck) || (values[row+1][col-2] == valToCheck) || (values[row+2][col-2] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
@@ -256,22 +311,25 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
             switch(col%3)
             {
                 case 0:
-                    if((values[row-1][col+1] == valToCheck) || (values[row-1][col+1] == valToCheck) || (values[row+1][col+2] == valToCheck) || (values[row-1][col+2] == valToCheck))
+                    if((values[row-1][col+1] == valToCheck) || (values[row+1][col+1] == valToCheck) || (values[row-1][col+2] == valToCheck) || (values[row+1][col+2] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
 
                 case 1:
-                    if((values[row-1][col+1] == valToCheck) || (values[row-1][col+1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row-1][col-1] == valToCheck))
+                    if((values[row-1][col+1] == valToCheck) || (values[row+1][col+1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row+1][col-1] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
 
                 case 2:
-                    if((values[row-1][col-1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row+1][col-2] == valToCheck) || (values[row-1][col-2] == valToCheck))
+                    if((values[row-1][col-1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row-1][col-2] == valToCheck) || (values[row+1][col-2] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
@@ -284,6 +342,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 case 0:
                     if((values[row-1][col+1] == valToCheck) || (values[row-2][col+1] == valToCheck) || (values[row-1][col+2] == valToCheck) || (values[row-2][col+2] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
@@ -291,6 +350,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 case 1:
                     if((values[row-1][col+1] == valToCheck) || (values[row-2][col+1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row-2][col-1] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;
@@ -298,6 +358,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 case 2:
                     if((values[row-1][col-1] == valToCheck) || (values[row-2][col-1] == valToCheck) || (values[row-1][col-2] == valToCheck) || (values[row-2][col-2] == valToCheck))
                     {
+                        // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
                     }
                 break;

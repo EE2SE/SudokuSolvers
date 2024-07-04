@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc,  char** argv) 
 {
     cout << "Sudoku Solvers Comparison V" << MAJOR_V << "." << MINOR_V << endl << endl;
-    string filename = "sudoku1.txt";
+    string filename = "sudoku1_simple.txt";
     Sudoku mysudoku(filename);
     if(mysudoku.solveBruteForce())
     {
