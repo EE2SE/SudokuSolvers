@@ -15,7 +15,8 @@ class Sudoku
     public:
         Sudoku(string filename);
         Sudoku();
-        void solveBruteForce();
+        bool solveBetterBruteForce();
+        bool solveBruteForce();
         void solveBacktrack();
         void solveHuman();
         void printSolution();

@@ -75,14 +75,25 @@ void Sudoku::printSolution()
     {
         for(int k = 0; k < NUM_COLS; k++)
         {
-            cout <<  " | " << values[i][k];
+            cout <<  " | " << solution[i][k];
         }
         cout << " |" << endl;
         cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
     }
 }
 
-void Sudoku::solveBruteForce()
+bool Sudoku::solveBetterBruteForce()
+{
+        /*
+        Pure brute rorce algo updates all 81 cells every time it need to change just 1 number.
+        This version of the brute force will only update the required values, which should
+        result in significat speed-up
+    */
+
+   
+}
+
+bool Sudoku::solveBruteForce()
 {
     /*
         Brute Force tries every single number combination blindly.
@@ -151,30 +162,38 @@ void Sudoku::solveBruteForce()
                     // incremeneting the next cell instead
                     if ((i == updatableCells[updatingCellIdx].at(0)) && (k == updatableCells[updatingCellIdx].at(1)))
                     {
-                        cout << "Attempt: " << counter << "/" << totalCombinations << endl;
-                        counter++;
-                        if (idx >= possibleValues[i][k].size()-2)
+                        if(counter%100000 == 0)
                         {
-                            possibleValues[i][k].pop_back();
-                            possibleValues[i][k].push_back(0);
+                            cout << "Attempt: " << counter << "/" << totalCombinations << ". Completed: " << 100.0f*(float)counter/(float)totalCombinations <<endl;
+                        }
+
+                        counter++;
+
+
+                        while(idx>=possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].size()-2)
+                        {
+
+                            possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].pop_back();
+                            possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].push_back(0);
                             updatingCellIdx++;
                             if(updatingCellIdx == updatableCells.size())
                             {
                                 cout << "NO SOLUTION FOUND!" << endl;
-                                return;
+                                return false;
                             }
+                            idx = possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].back();
                         }
-                        else
-                        {
-                            possibleValues[i][k].pop_back();
-                            possibleValues[i][k].push_back(++idx);
-                        }
+                        updatingCellIdx = 0;
+                        possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].pop_back();
+                        possibleValues[updatableCells[updatingCellIdx].at(0)][updatableCells[updatingCellIdx].at(1)].push_back(++idx);
                     }
                 }
             }
         }
         
     }
+
+    return true;
 
 }
 
