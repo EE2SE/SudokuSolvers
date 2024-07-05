@@ -12,7 +12,7 @@ using namespace std::chrono; // nanoseconds, system_clock, seconds
 
 Sudoku::Sudoku()
 {
-    cout<<"Please provide a text file"<<endl;
+    cout << "Please provide a text file" << endl;
 }
 
 Sudoku::Sudoku(string filename)
@@ -64,6 +64,7 @@ void Sudoku::readInValues()
             
 
         }
+        cout << endl << endl;
     }
 
     myfile.close();
@@ -84,7 +85,7 @@ void Sudoku::printSolution()
 
 bool Sudoku::solveBetterBruteForce()
 {
-        /*
+    /*
         Pure brute rorce algo updates all 81 cells every time it need to change just 1 number.
         This version of the brute force will only update the required values, which should
         result in significat speed-up
@@ -102,11 +103,16 @@ bool Sudoku::solveBetterBruteForce()
             vector<int> cell_options;
             if(fixed_values[i][k] == 0)
             {
-                for(int checkval = 0; checkval < 8; checkval++)
+                for(int checkval = 1; checkval < 10; checkval++)
                 {
                     if(checkValuePossible(checkval, i, k))
                     {
                         cell_options.push_back(checkval);
+                        // populate the solution with the first guess
+                        if(cell_options.size() == 1)
+                        {
+                            solution[i][k] = checkval;
+                        }
                     }
                 }
 
@@ -116,17 +122,67 @@ bool Sudoku::solveBetterBruteForce()
                 updatableCells.push_back(rowColPair);
                 totalCombinations *= cell_options.size();
             }
-            cout << cell_options.size() << " ";
+            // cout << cell_options.size() << " ";
             // push back a counter
             cell_options.push_back(0);
             row.push_back(cell_options);
         }
-        cout << endl;
+        // cout << endl;
         possibleValues.push_back(row);
     }
 
-    return true;
+    int updatingCellIdx = 0;
+    int counter = 0;
+    while(!checkSolution())
+    {
+        int updating_row = updatableCells[updatingCellIdx].at(0);
+        int updating_col = updatableCells[updatingCellIdx].at(1);
+        int last_idx = possibleValues[updating_row][updating_col].back();
+        
+        // check if there are more options in this cell
+        if(last_idx < possibleValues[updating_row][updating_col].size()-2)
+        {
+            // if there, set it to try the next option and don't change the updating cell
+            possibleValues[updating_row][updating_col].pop_back();
+            possibleValues[updating_row][updating_col].push_back(++last_idx);
+            solution[updating_row][updating_col] = possibleValues[updating_row][updating_col].at(last_idx);
+            // cout << "Updating " << updating_row << " " << updating_col << endl;
+            
+        }
+        else // otherwise we need to go to the next incrementable cell and increment that one while resetting all the previous ones
+        {
+            while(last_idx >= possibleValues[updating_row][updating_col].size()-2)
+            {
+                possibleValues[updating_row][updating_col].pop_back();
+                possibleValues[updating_row][updating_col].push_back(0);
+                solution[updating_row][updating_col] = possibleValues[updating_row][updating_col].at(0);
+                // cout << "Resetting " << updating_row << " " << updating_col << endl;
+                updatingCellIdx++;
+                if(updatingCellIdx == updatableCells.size())
+                {
+                    cout << "NO SOLUTION FOUND!" << endl;
+                    return false;
+                }
 
+                updating_row = updatableCells[updatingCellIdx].at(0);
+                updating_col = updatableCells[updatingCellIdx].at(1);
+                last_idx = possibleValues[updating_row][updating_col].back();
+            }
+            // cout << "Updating " << updating_row << " " << updating_col << endl;
+            possibleValues[updating_row][updating_col].pop_back();
+            possibleValues[updating_row][updating_col].push_back(++last_idx);
+            solution[updating_row][updating_col] = possibleValues[updating_row][updating_col].at(last_idx);
+            // cout << "Updating " << updating_row << " " << updating_col << endl;
+            updatingCellIdx = 0;
+        }
+        counter++;
+        
+    }
+
+    // printSolution();
+
+
+    return true;
 
 }
 
@@ -170,19 +226,19 @@ bool Sudoku::solveBruteForce()
                 updatableCells.push_back(rowColPair);
                 totalCombinations *= cell_options.size(); // this is overflowing as the real number is of the order of 1e19
             }
-            cout << cell_options.size() << " ";
+            // cout << cell_options.size() << " ";
             // push back a counter
             cell_options.push_back(0);
             row.push_back(cell_options);
         }
-        cout << endl;
+        // cout << endl;
         possibleValues.push_back(row);
     }
 
     // now iterate over all possible number combinations 
     int updatingCellIdx = 0;
     int counter = 1;
-    cout << totalCombinations << endl;
+    // cout << totalCombinations << endl;
     while(!checkSolution())
     {
         // insert numbers
@@ -200,10 +256,6 @@ bool Sudoku::solveBruteForce()
             }
         }
 
-        if(counter%1000000 == 0)
-        {
-            cout << "Attempt: " << counter << "/" << totalCombinations << ". Completed: " << 100.0f*(float)counter/(float)totalCombinations <<endl;
-        }
         counter++;
         //once we updated 81 cells update vectors and indicies.
         // fetch currently used cell
@@ -243,7 +295,7 @@ bool Sudoku::solveBruteForce()
         
     }
 
-    printSolution();
+    // printSolution();
     return true;
 
 }
