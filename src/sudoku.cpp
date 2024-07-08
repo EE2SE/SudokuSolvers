@@ -1,4 +1,4 @@
-#include "sudoku.hpp"
+#include "../inc/sudoku.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>     /* atoi */

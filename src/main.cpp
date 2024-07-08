@@ -3,9 +3,9 @@
 #include <string>
 #include <chrono>
 
-#include "sudoku.hpp"
-#include "sudokuBrute.hpp"
-#include "sudokuBruteBetter.hpp"
+#include "../inc/sudoku.hpp"
+#include "../inc/sudokuBrute.hpp"
+#include "../inc/sudokuBruteBetter.hpp"
 
 #define MAJOR_V 0
 #define MINOR_V 2
@@ -19,7 +19,7 @@ using chrono::milliseconds;
 int main(int argc,  char** argv) 
 {
     cout << "Sudoku Solvers Comparison V" << MAJOR_V << "." << MINOR_V << endl << endl;
-    string filename = "sudoku1_simple.txt";
+    string filename = "../sudoku1_simple.txt";
     SudokuBrute sudokuBase(filename);
     SudokuBruteBetter sudokuBrute2(filename);
 

@@ -1,7 +1,7 @@
 #ifndef SUDOKUBRUTEBETTER_HPP
 #define SUDOKUBRUTEBETTER_HPP
 
-#include "sudoku.hpp"
+#include "../inc/sudoku.hpp"
 
 class SudokuBruteBetter: public Sudoku
 {

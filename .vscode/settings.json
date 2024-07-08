@@ -12,6 +12,7 @@
         "__string": "cpp",
         "vector": "cpp",
         "chrono": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "fstream": "cpp"
     }
 }

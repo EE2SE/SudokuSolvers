@@ -1,7 +1,7 @@
 #ifndef SUDOKUBRUTE_HPP
 #define SUDOKUBRUTE_HPP
 
-#include "sudoku.hpp"
+#include "../inc/sudoku.hpp"
 
 class SudokuBrute: public Sudoku
 {

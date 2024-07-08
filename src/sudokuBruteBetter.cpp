@@ -1,20 +1,14 @@
-#include "sudokuBrute.hpp"
-#include "sudoku.hpp"
+#include "../inc/sudokuBruteBetter.hpp"
+#include "../inc/sudoku.hpp"
 #include <iostream>
 
-void SudokuBrute::solve()
+void SudokuBruteBetter::solve()
 {
-       /*
-        Brute Force tries every single number combination blindly.
-        E.g. it will start by filling all values with 1111, then 1112 etc.
-        This will probably not even work because to try all 9 numbers in
-        at worst 81 different squares will require something like 1e77 total tries.
-
-        So we can do a little better but still brute force. We can determine every
-        single possible value for each cell and then only try those. So if in row (a)
-        we have a fixed 5, we won't brute force insert 5 into any cell in that row
+    /*
+        Pure brute rorce algo updates all 81 cells every time it need to change just 1 number.
+        This version of the brute force will only update the required values, which should
+        result in significat speed-up
     */
-
     int totalCombinations = 1; 
 
     // initialise a 3D vector storing all non-taken values
@@ -33,6 +27,11 @@ void SudokuBrute::solve()
                     if(checkValuePossible(checkval, i, k))
                     {
                         cell_options.push_back(checkval);
+                        // populate the solution with the first guess
+                        if(cell_options.size() == 1)
+                        {
+                            solution[i][k] = checkval;
+                        }
                     }
                 }
 
@@ -40,7 +39,7 @@ void SudokuBrute::solve()
                 rowColPair.push_back(i);
                 rowColPair.push_back(k);
                 updatableCells.push_back(rowColPair);
-                totalCombinations *= cell_options.size(); // this is overflowing as the real number is of the order of 1e19
+                totalCombinations *= cell_options.size();
             }
             // cout << cell_options.size() << " ";
             // push back a counter
@@ -51,40 +50,23 @@ void SudokuBrute::solve()
         possibleValues.push_back(row);
     }
 
-    // now iterate over all possible number combinations 
     int updatingCellIdx = 0;
-    int counter = 1;
-    // cout << totalCombinations << endl;
+    int counter = 0;
     while(!checkSolution())
     {
-        // insert numbers
-        for (int i = 0; i < NUM_ROWS; i++)
-        {
-            for (int k = 0; k < NUM_COLS; k++)
-            {
-                if(fixed_values[i][k] == 0)
-                {
-                    // idx - position in the vector of availbale options for the given cell to try out
-                    int idx = possibleValues[i][k].back();
-                    // insert the possible value from vector[idx] for the given cell
-                    solution[i][k] = possibleValues[i][k].at(idx);
-                }
-            }
-        }
-
-        counter++;
-        //once we updated 81 cells update vectors and indicies.
-        // fetch currently used cell
-        // actually at this stage updatingCellIdx is always 0.
         int updating_row = updatableCells[updatingCellIdx].at(0);
         int updating_col = updatableCells[updatingCellIdx].at(1);
         int last_idx = possibleValues[updating_row][updating_col].back();
+        
         // check if there are more options in this cell
         if(last_idx < possibleValues[updating_row][updating_col].size()-2)
         {
             // if there, set it to try the next option and don't change the updating cell
             possibleValues[updating_row][updating_col].pop_back();
             possibleValues[updating_row][updating_col].push_back(++last_idx);
+            solution[updating_row][updating_col] = possibleValues[updating_row][updating_col].at(last_idx);
+            // cout << "Updating " << updating_row << " " << updating_col << endl;
+            
         }
         else // otherwise we need to go to the next incrementable cell and increment that one while resetting all the previous ones
         {
@@ -92,24 +74,31 @@ void SudokuBrute::solve()
             {
                 possibleValues[updating_row][updating_col].pop_back();
                 possibleValues[updating_row][updating_col].push_back(0);
+                solution[updating_row][updating_col] = possibleValues[updating_row][updating_col].at(0);
+                // cout << "Resetting " << updating_row << " " << updating_col << endl;
                 updatingCellIdx++;
                 if(updatingCellIdx == updatableCells.size())
                 {
                     cout << "NO SOLUTION FOUND!" << endl;
                     return;
-
                 }
 
                 updating_row = updatableCells[updatingCellIdx].at(0);
                 updating_col = updatableCells[updatingCellIdx].at(1);
                 last_idx = possibleValues[updating_row][updating_col].back();
             }
-
+            // cout << "Updating " << updating_row << " " << updating_col << endl;
             possibleValues[updating_row][updating_col].pop_back();
             possibleValues[updating_row][updating_col].push_back(++last_idx);
+            solution[updating_row][updating_col] = possibleValues[updating_row][updating_col].at(last_idx);
+            // cout << "Updating " << updating_row << " " << updating_col << endl;
             updatingCellIdx = 0;
         }
+        counter++;
         
     }
- 
+
+    // printSolution();
+
+
 }

@@ -9,9 +9,9 @@
                 "-fansi-escape-codes",
                 "-std=c++11",
                 "-g",
-                "${workspaceFolder}/*.cpp",
+                "${workspaceFolder}/src/*.cpp",
                 "-o",
-                "${fileDirname}/debug/${fileBasenameNoExtension}"
+                "${fileDirname}/../debug/${fileBasenameNoExtension}"
             ],
             "options": {
                 "cwd": "${fileDirname}"
