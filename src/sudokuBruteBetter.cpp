@@ -24,7 +24,7 @@ void SudokuBruteBetter::solve()
             {
                 for(int checkval = 1; checkval < 10; checkval++)
                 {
-                    if(checkValuePossible(checkval, i, k))
+                    if(checkValuePossible(checkval, i, k, values))
                     {
                         cell_options.push_back(checkval);
                         // populate the solution with the first guess

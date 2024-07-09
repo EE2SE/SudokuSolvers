@@ -6,6 +6,7 @@
 #include "../inc/sudoku.hpp"
 #include "../inc/sudokuBrute.hpp"
 #include "../inc/sudokuBruteBetter.hpp"
+#include "../inc/sudokuBacktrackV1.hpp"    
 
 #define MAJOR_V 0
 #define MINOR_V 2
@@ -22,6 +23,7 @@ int main(int argc,  char** argv)
     string filename = "../sudoku1_simple.txt";
     SudokuBrute sudokuBase(filename);
     SudokuBruteBetter sudokuBrute2(filename);
+    SudokuBacktrackV1 sudokuBack1(filename);
 
     auto t1 = high_resolution_clock::now();
     sudokuBase.solve();
@@ -34,6 +36,12 @@ int main(int argc,  char** argv)
 
     t1 = high_resolution_clock::now();
     sudokuBrute2.solve();
+    t2 = high_resolution_clock::now();
+    ms_double = t2 - t1;
+    cout << ms_double.count() << "ms\n";
+
+    t1 = high_resolution_clock::now();
+    sudokuBack1.solve();
     t2 = high_resolution_clock::now();
     ms_double = t2 - t1;
     cout << ms_double.count() << "ms\n";

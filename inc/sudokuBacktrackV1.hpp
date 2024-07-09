@@ -1,14 +1,13 @@
-#ifndef SUDOKUBRUTE_HPP
-#define SUDOKUBRUTE_HPP
+#ifndef SUDOKUBACKTRACKV1_HPP
+#define SUDOKUBACKTRACKV1_HPP
 
 #include "../inc/sudoku.hpp"
 
-class SudokuBrute: public Sudoku
+class SudokuBacktrackV1: public Sudoku
 {
     public:
         using Sudoku::Sudoku;
         void solve();
-    
 };
 
 #endif

@@ -18,7 +18,7 @@ class Sudoku
         void printSolution();
         virtual void solve();
         
-
+        
     protected:
         string sudoku_filename;
         bool solved;
@@ -28,7 +28,9 @@ class Sudoku
         int filledSpaces;
         void readInValues();
         bool checkSolution();
-        bool checkValuePossible(int valToCheck, int row, int col);
+        bool checkValuePossible(int valToCheck, int row, int col, int (&grid)[NUM_ROWS][NUM_COLS]);
+
+        
 };
 
 #endif

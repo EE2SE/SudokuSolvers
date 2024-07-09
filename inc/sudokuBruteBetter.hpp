@@ -8,6 +8,7 @@ class SudokuBruteBetter: public Sudoku
     public:
         using Sudoku::Sudoku;
         void solve();
+
 };
 
 #endif

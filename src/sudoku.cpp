@@ -84,11 +84,11 @@ void Sudoku::solve()
 
 }
 
-bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
+bool Sudoku::checkValuePossible(int valToCheck, int row, int col, int (&grid)[NUM_ROWS][NUM_COLS])
 {
     for(int i = 0; i < NUM_COLS; i++)
     {
-        if(values[row][i] == valToCheck)
+        if(grid[row][i] == valToCheck)
         {
             // cout << "In column-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
             return false;
@@ -97,7 +97,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
 
     for(int i = 0; i < NUM_ROWS; i++)
     {
-        if(values[i][col] == valToCheck)
+        if(grid[i][col] == valToCheck)
         {
             // cout << "In row-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
             return false;
@@ -119,7 +119,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
             switch(col%3)
             {
                 case 0:
-                    if((values[row+1][col+1] == valToCheck) || (values[row+2][col+1] == valToCheck) || (values[row+1][col+2] == valToCheck) || (values[row+2][col+2] == valToCheck))
+                    if((grid[row+1][col+1] == valToCheck) || (grid[row+2][col+1] == valToCheck) || (grid[row+1][col+2] == valToCheck) || (grid[row+2][col+2] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -127,7 +127,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 break;
 
                 case 1:
-                    if((values[row+1][col+1] == valToCheck) || (values[row+2][col+1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row+2][col-1] == valToCheck))
+                    if((grid[row+1][col+1] == valToCheck) || (grid[row+2][col+1] == valToCheck) || (grid[row+1][col-1] == valToCheck) || (grid[row+2][col-1] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -135,7 +135,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 break;
 
                 case 2:
-                    if((values[row+1][col-1] == valToCheck) || (values[row+2][col-1] == valToCheck) || (values[row+1][col-2] == valToCheck) || (values[row+2][col-2] == valToCheck))
+                    if((grid[row+1][col-1] == valToCheck) || (grid[row+2][col-1] == valToCheck) || (grid[row+1][col-2] == valToCheck) || (grid[row+2][col-2] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -148,7 +148,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
             switch(col%3)
             {
                 case 0:
-                    if((values[row-1][col+1] == valToCheck) || (values[row+1][col+1] == valToCheck) || (values[row-1][col+2] == valToCheck) || (values[row+1][col+2] == valToCheck))
+                    if((grid[row-1][col+1] == valToCheck) || (grid[row+1][col+1] == valToCheck) || (grid[row-1][col+2] == valToCheck) || (grid[row+1][col+2] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -156,7 +156,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 break;
 
                 case 1:
-                    if((values[row-1][col+1] == valToCheck) || (values[row+1][col+1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row+1][col-1] == valToCheck))
+                    if((grid[row-1][col+1] == valToCheck) || (grid[row+1][col+1] == valToCheck) || (grid[row-1][col-1] == valToCheck) || (grid[row+1][col-1] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -164,7 +164,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 break;
 
                 case 2:
-                    if((values[row-1][col-1] == valToCheck) || (values[row+1][col-1] == valToCheck) || (values[row-1][col-2] == valToCheck) || (values[row+1][col-2] == valToCheck))
+                    if((grid[row-1][col-1] == valToCheck) || (grid[row+1][col-1] == valToCheck) || (grid[row-1][col-2] == valToCheck) || (grid[row+1][col-2] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -177,7 +177,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
             switch(col%3)
             {
                 case 0:
-                    if((values[row-1][col+1] == valToCheck) || (values[row-2][col+1] == valToCheck) || (values[row-1][col+2] == valToCheck) || (values[row-2][col+2] == valToCheck))
+                    if((grid[row-1][col+1] == valToCheck) || (grid[row-2][col+1] == valToCheck) || (grid[row-1][col+2] == valToCheck) || (grid[row-2][col+2] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -185,7 +185,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 break;
 
                 case 1:
-                    if((values[row-1][col+1] == valToCheck) || (values[row-2][col+1] == valToCheck) || (values[row-1][col-1] == valToCheck) || (values[row-2][col-1] == valToCheck))
+                    if((grid[row-1][col+1] == valToCheck) || (grid[row-2][col+1] == valToCheck) || (grid[row-1][col-1] == valToCheck) || (grid[row-2][col-1] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -193,7 +193,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
                 break;
 
                 case 2:
-                    if((values[row-1][col-1] == valToCheck) || (values[row-2][col-1] == valToCheck) || (values[row-1][col-2] == valToCheck) || (values[row-2][col-2] == valToCheck))
+                    if((grid[row-1][col-1] == valToCheck) || (grid[row-2][col-1] == valToCheck) || (grid[row-1][col-2] == valToCheck) || (grid[row-2][col-2] == valToCheck))
                     {
                         // cout << "In box-> " <<"Value: " << valToCheck << "In :" << row << " " << col << endl;
                         return false;
@@ -207,6 +207,7 @@ bool Sudoku::checkValuePossible(int valToCheck, int row, int col)
     return true;
 
 }
+
 
 bool Sudoku::checkSolution()
 {
