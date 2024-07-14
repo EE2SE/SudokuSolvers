@@ -47,3 +47,5 @@ So the results are not something super wild and crazy. Overall the trend can be 
 |       **50%** |      0.106236 |         0.154840 |         0.211757 |
 |       **75%** |      0.606455 |         0.568917 |         0.345347 |
 |       **max** |    292.102667 |       206.090333 |       147.256333 |
+
+P.S. I run this with -03 optimisation flag set and with -funroll-loops flag too to squeeze the most out of this M2 chipset on my MacBook Air.
