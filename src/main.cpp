@@ -54,8 +54,11 @@ int main(int argc, char **argv)
     ofstream results;
     results.open("../Sudokus/results.txt", ios::trunc);
     string filename = "../Sudokus/sudokuTest.txt";
+for (int j = 0; j < 3; j++)
+{
 
-    for (int i = 1; i < 30000; i++)
+
+    for (int i = 1; i < 30001; i++)
     {
         if(i%1000 == 0)
         {
@@ -84,6 +87,7 @@ int main(int argc, char **argv)
         ms_double = t2 - t1;
         results << ms_double.count() << "\n";
     }
+}
     results.close();
 
     // cout << "Solving " << filename << endl;
