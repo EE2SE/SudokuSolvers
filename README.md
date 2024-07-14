@@ -35,8 +35,10 @@ This is the same as V1 but we implement it the Computerphile way - recursion. Th
 
 I have downloaded (https://www.printable-sudoku-puzzles.com/wfiles/) lots (30K) sudokus of various complexitites. I then replicated them 3 times, so each sudoku is solved 3 times for each algortihm (no real point testing any of the Brute Force algos on such a vast dataset. It would take more time than there has ever been since the Big Bang). We then take a mean of each solve and plot a histogram and print out key stats. There are dispalyed in the jupyter notebook attached to this repo.
 
-So the results are not something super wild and crazy. Overall the trend can be summarised as t(V3) > t(V1) > t(V2), where t(x) is the execution time of algo x. So V2 wins right? Well, sort of. While it does have the highest chance of beqing the quickest for any given sudoku, it doesn't produce the fastest times in those edge cases - because of.... OVERHEADS! In those edge cases of sudoku being super simple recursion wins as it has far fewer overheads. You may argue that I could rewrite V1 and V2 with fewer overheads and you woul dbe right. But I didn't so recursion wins the ultimate fastest solve time.
+So the results are not something super wild and crazy. Overall the trend can be summarised as t(V3) > t(V1) > t(V2), where t(x) is the execution time of algo x. So V2 wins right? Well, sort of. While it does have the highest chance of being the quickest for any given sudoku, it doesn't produce the fastest times in those edge cases - because of.... OVERHEADS! In those edge cases of sudoku being super simple recursion wins as it has far fewer overheads. You may argue that I could rewrite V1 and V2 with fewer overheads and you would be right. But I didn't so recursion wins the ultimate fastest solve time.
 
+
+Times presented in milliseconds.
 | **Algortihm** | **Recursion** | **Backtrack V1** | **Backtrack V2** |
 |---------------|---------------|------------------|------------------|
 |     **count** |  30000.000000 |     30000.000000 |     30000.000000 |
