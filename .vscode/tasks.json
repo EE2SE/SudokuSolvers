@@ -7,7 +7,9 @@
             "args": [
                 "-fcolor-diagnostics",
                 "-fansi-escape-codes",
-                "-std=c++11",
+                "-O3",
+                "-funroll-loops",
+                "-std=c++17",
                 "-g",
                 "${workspaceFolder}/src/*.cpp",
                 "-o",

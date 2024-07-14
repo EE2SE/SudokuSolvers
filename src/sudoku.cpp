@@ -11,13 +11,13 @@ Sudoku::Sudoku()
     cout << "Please provide a text file" << endl;
 }
 
-Sudoku::Sudoku(string filename)
+Sudoku::Sudoku(string filename, bool print)
 {
     sudoku_filename = filename;
-    readInValues();
+    readInValues(print);
 }
 
-void Sudoku::readInValues()
+void Sudoku::readInValues(bool print)
 {
     ifstream myfile;
     char val;
@@ -33,8 +33,12 @@ void Sudoku::readInValues()
             {
                 if(val == 10)
                 {
-                    cout << " |" << endl;
-                    cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
+                    if(print)
+                    {
+                        cout << " |" << endl;
+                        cout << "- - - - - - - - - - - - - - - - - - - -" << endl;
+                    }
+
                 }
                 else
                 {
@@ -43,7 +47,11 @@ void Sudoku::readInValues()
                     solution[row][column] = int(val - '0');
                     fixed_values[row][column] = (int(val - '0') == 0) ? 0 : 1;
                     filledSpaces += fixed_values[row][column];
-                    cout <<  " | "<< values[row][column];
+                    if(print)
+                    {
+                        cout <<  " | "<< values[row][column];
+                    }
+
                     column++;
                     if(column == NUM_COLS)
                     {
@@ -54,13 +62,20 @@ void Sudoku::readInValues()
             }
             else
             {
-                cout << " |" << endl;
+                if(print)
+                {
+                    cout << " |" << endl;
+                }
             }
            
             
 
         }
-        cout << endl << endl;
+        if(print)
+        {
+            cout << endl << endl;
+        }
+
     }
 
     myfile.close();
